@@ -3,3 +3,5 @@ wpcom-helper.php
 .DS_Store
 /report/
 .idea
+
+/vendor/

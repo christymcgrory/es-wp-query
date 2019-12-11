@@ -1,0 +1,14 @@
+{
+    "name": "christymcgrory/es-wp-query",
+    "description": "A drop-in replacement for WP_Query to leverage Elasticsearch for complex queries.",
+    "type": "library",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Christy McGrory",
+            "email": "christy.mcgrory@rs-components.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
