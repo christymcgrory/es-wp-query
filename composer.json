@@ -9,6 +9,6 @@
             "email": "christy.mcgrory@rs-components.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {}
 }
