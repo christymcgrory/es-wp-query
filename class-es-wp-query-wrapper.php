@@ -271,6 +271,16 @@ abstract class ES_WP_Query_Wrapper extends WP_Query {
 		// Fill again in case pre_get_posts unset some vars.
 		$q = $this->fill_query_vars( $q );
 
+		$special = '';
+		do_action( 'qm/debug', $q['meta_query'][0]['value'] );
+		if ( strpos( $q['s'], '*' ) ){
+			do_action('qm/debug', 'wildcard in query');
+			$special['wildcard'] = true;
+		} elseif( strpos( $q['meta_query'][0]['value'], '*' ) ) {
+			do_action('qm/debug', 'meta wildcard in query');
+			$special['meta_wildcard'] = true;
+		}
+
 		// Parse meta query.
 		$this->meta_query = new ES_WP_Meta_Query();
 		$this->meta_query->parse_query_vars( $q );
@@ -885,7 +895,7 @@ abstract class ES_WP_Query_Wrapper extends WP_Query {
 				// @todo: potentially do this differently; see no_results() for more info
 				return $this->no_results();
 			} else {
-				$filter[] = $this->dsl_terms( $this->es_map( 'post_type' ), array_values( $in_search_post_types ) );
+				$filter[] = $this->dsl_terms( $this->es_map( 'post_type' ), array_values( $in_search_post_types ), $special );
 			}
 		} elseif ( ! empty( $post_type ) ) {
 			$filter[] = $this->dsl_terms( $this->es_map( 'post_type' ), array_values( (array) $post_type ) );
@@ -1561,7 +1571,12 @@ abstract class ES_WP_Query_Wrapper extends WP_Query {
 	 * @return array DSL for the term or terms query.
 	 */
 	public static function dsl_terms( $field, $values, $args = array() ) {
+		if( ($args['wildcard'] = true || $args['meta_wildcard'] = true) && strpos( $field, 'meta' ) ) {
+			$type = 'regexp';
+		} else {
 		$type = is_array( $values ) ? 'terms' : 'term';
+		}
+		unset($args['wildcard']);
 		return array( $type => array_merge( array( $field => $values ), $args ) );
 	}
 
