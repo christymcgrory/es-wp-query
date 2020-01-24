@@ -228,6 +228,8 @@ abstract class ES_WP_Query_Wrapper extends WP_Query {
 		 *      post_mime_type
 		 *      comment_count
 		 */
+		do_action('qm/debug', 'ES WP QUERY INIT');
+		
 		$this->es_map = apply_filters(
 			'es_field_map',
 			array(
