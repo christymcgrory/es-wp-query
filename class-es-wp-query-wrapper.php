@@ -271,13 +271,14 @@ abstract class ES_WP_Query_Wrapper extends WP_Query {
 		// Fill again in case pre_get_posts unset some vars.
 		$q = $this->fill_query_vars( $q );
 
-		$special = '';
-		do_action( 'qm/debug', $q['meta_query'][0]['value'] );
-		if ( strpos( $q['s'], '*' ) ){
-			do_action('qm/debug', 'wildcard in query');
+		$special = array();
+		$meta_query_value = &$q['meta_query'][0]['value'];
+
+		if ( strpos( $q['s'], '*' ) !== false ){
 			$special['wildcard'] = true;
-		} elseif( strpos( $q['meta_query'][0]['value'], '*' ) ) {
-			do_action('qm/debug', 'meta wildcard in query');
+		} elseif( strpos( $meta_query_value, '*' ) !== false ) {
+			$new_value = preg_replace( '/\*/', '.*', $meta_query_value );
+			$q['meta_query'][0]['value'] = $new_value;
 			$special['meta_wildcard'] = true;
 		}
 
